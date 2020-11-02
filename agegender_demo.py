@@ -331,6 +331,7 @@ def show_results(img,results, img_width, img_height, model_age, model_gender, mo
 			offset=offset+16
 	print("Gender : %.2f" % prob_gender_keras + " " + lines_gender[cls_gender_keras])
 	cv2.imwrite('images/output.jpg',img_cp)
+	return prob_gender_keras, label
 	
 def stringToRGB(base64_string):
     imgdata = base64.b64decode(str(base64_string))
@@ -411,7 +412,7 @@ def main(argv):
 		results = interpret_output_yolov2(out2, img.shape[1], img.shape[0])
 
 		#Age and Gender Detection
-		show_results(img_cv,results, img.shape[1], img.shape[0], model_age, model_gender, model_emotion)
+		pred_gender,pred_age = show_results(img_cv,results, img.shape[1], img.shape[0], model_age, model_gender, model_emotion)
 
 if __name__=='__main__':
 	main(sys.argv[1:])
