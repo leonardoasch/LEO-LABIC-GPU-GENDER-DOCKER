@@ -14,6 +14,11 @@ os.environ['KERAS_BACKEND'] = 'tensorflow'
 from keras.models import load_model
 from keras.preprocessing import image
 
+from kafka import KafkaConsumer
+import pymongo
+from pymongo import MongoClient
+from bson.objectid import ObjectId
+
 #YOLOV1
 #reference from https://github.com/xingwangsfu/caffe-yolo
 def interpret_output_yolov1(output, img_width, img_height):
@@ -326,6 +331,12 @@ def show_results(img,results, img_width, img_height, model_age, model_gender, mo
 			offset=offset+16
 	print("Gender : %.2f" % prob_gender_keras + " " + lines_gender[cls_gender_keras])
 	cv2.imwrite('images/output.jpg',img_cp)
+	return prob_gender_keras, label
+	
+def stringToRGB(base64_string):
+    imgdata = base64.b64decode(str(base64_string))
+    image = Image.open(BytesIO(imgdata))
+    return cv2.cvtColor(np.array(image), cv2.COLOR_BGR2RGB)
 
 def main(argv):
 	MODEL_ROOT_PATH="./pretrain/"
@@ -349,23 +360,64 @@ def main(argv):
 	# while True:
 	# 	#Face Detection
 	# 	ret, frame = cap.read() #BGR
-
-	#frame = cv2.imread("/home/users/leonardo/App3/seg/images/44.jpg") # change to loop image path
-	frame = cv2.imread("deblur.jpg") # change to loop image path
+	
 
 
-	img=frame
-	img = img[...,::-1]  #BGR 2 RGB
-	inputs = img.copy() / 255.0
+	os.environ['TZ'] = 'UTC'
+	time.tzset()
 
-	img_cv = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-	img_camera = cv2.resize(inputs, (416,416))
-	img_camera = np.expand_dims(img_camera, axis=0)
-	out2 = model_face.predict(img_camera)[0]
-	results = interpret_output_yolov2(out2, img.shape[1], img.shape[0])
 
-	#Age and Gender Detection
-	show_results(img_cv,results, img.shape[1], img.shape[0], model_age, model_gender, model_emotion)
+	topic = "leonardo-stream3"
+
+	consumer = KafkaConsumer(
+		 topic,
+		 bootstrap_servers=['10.0.10.11:9092'],
+		 auto_offset_reset='earliest',
+		 enable_auto_commit=True,
+		 group_id='my-group',
+		 value_deserializer=lambda x: loads(x.decode('utf-8'))
+		 )
+
+
+	myclient = pymongo.MongoClient("mongodb://10.0.10.50:27017/")
+	mydb = myclient["leonardo"]
+	mycol = mydb["leonardostream"]
+	
+	for message in consumer:
+
+		#frame = cv2.imread("/home/users/leonardo/App3/seg/images/44.jpg") # change to loop image path
+		#frame = cv2.imread("deblur.jpg") # change to loop image path
+		
+		message = message.value
+		#frame = frame + 1
+		
+		#print(message["mongoid"])
+		
+		data = mycol.find_one({"_id": ObjectId(message["mongoid"])})
+
+		tempo = datetime.strptime(message["timestamp"], '%Y-%m-%d %H:%M:%S.%f')    
+		bboxes = data['bbox']
+		image = stringToRGB(data['data'])
+		frame = image[bboxes["StartY"]:bboxes["EndY"],bboxes["StartX"]:bboxes["EndX"]]
+
+
+		img=frame
+		img = img[...,::-1]  #BGR 2 RGB
+		inputs = img.copy() / 255.0
+
+		img_cv = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+		img_camera = cv2.resize(inputs, (416,416))
+		img_camera = np.expand_dims(img_camera, axis=0)
+		out2 = model_face.predict(img_camera)[0]
+		results = interpret_output_yolov2(out2, img.shape[1], img.shape[0])
+
+		#Age and Gender Detection
+		pred_gender,pred_age = show_results(img_cv,results, img.shape[1], img.shape[0], model_age, model_gender, model_emotion)
+		
+		newvalues = { "$set": { "age": pred_age }, {"gender": pred_gender} }
+
+		
+		mycol.update_one({"_id": ObjectId(message["mongoid"])}, newvalues)
 
 if __name__=='__main__':
 	main(sys.argv[1:])
