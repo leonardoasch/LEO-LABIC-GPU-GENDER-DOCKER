@@ -384,7 +384,7 @@ def main(argv):
 	time.tzset()
 
 
-	topic = "leonardo-stream3"
+	topic = "leonardo-stream-3"
 
 	consumer = KafkaConsumer(
 		 topic,
