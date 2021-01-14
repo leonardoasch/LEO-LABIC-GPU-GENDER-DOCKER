@@ -249,6 +249,8 @@ def crop(x,y,w,h,margin,img_width,img_height):
 
 #display result
 def show_results(img,results, img_width, img_height, model_age, model_gender, model_emotion):
+	prob_gender_keras = None
+	label = None
 	img_cp = img.copy()
 	for i in range(len(results)):
 		#display detected face
