@@ -18,6 +18,7 @@ from kafka import KafkaConsumer
 import pymongo
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+from json import loads
 
 #YOLOV1
 #reference from https://github.com/xingwangsfu/caffe-yolo
