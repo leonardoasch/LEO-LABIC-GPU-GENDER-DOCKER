@@ -397,7 +397,7 @@ def main(argv):
 		 )
 
 
-	myclient = pymongo.MongoClient("mongodb://10.0.10.50:27017/")
+	myclient = pymongo.MongoClient("mongodb://10.0.10.11:27017/")
 	mydb = myclient["leonardo"]
 	mycol = mydb["leonardostream"]
 	
