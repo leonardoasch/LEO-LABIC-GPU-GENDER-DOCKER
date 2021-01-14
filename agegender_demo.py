@@ -381,7 +381,7 @@ def main(argv):
 
 
 	os.environ['TZ'] = 'UTC'
-	time.tzset()
+	#time.tzset()
 
 
 	topic = "leonardo-stream-3"
