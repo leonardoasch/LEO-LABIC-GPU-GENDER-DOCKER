@@ -356,7 +356,7 @@ def stringToRGB(base64_string):
     return cv2.cvtColor(np.array(image), cv2.COLOR_BGR2RGB)
 
 def main(argv):
-	MODEL_ROOT_PATH="./pretrain/"
+	MODEL_ROOT_PATH="/app/pretrain/"
 
 	#Load Model
 	model_face = load_model(MODEL_ROOT_PATH+'yolov2_tiny-face.h5')
