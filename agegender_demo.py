@@ -280,7 +280,7 @@ def show_results(img,results, img_width, img_height, model_age, model_gender, mo
 		lines_gender=open('words/agegender_gender_words.txt').readlines()
 		lines_fer2013=open('words/emotion_words.txt').readlines()
 
-		if(model_age!=None):
+		if(model_age!=None):		
 			shape = model_age.layers[0].get_output_at(0).get_shape().as_list()
 			img_keras = cv2.resize(face_image, (shape[1],shape[2]))
 			#img_keras = img_keras[::-1, :, ::-1].copy()	#BGR to RGB
@@ -294,12 +294,29 @@ def show_results(img,results, img_width, img_height, model_age, model_gender, mo
 			age=0
 			for i in range(101):
 				age=age+pred_age_keras[i]*i
-			label=str(int(age))
+			#label=str(int(age))
+			
+			if(cls_age_keras<3):
+				label="%.2f" % prob_age_keras + " " + lines_age[0]
+			if(cls_age_keras>=3 and cls_age_keras<5):
+				label="%.2f" % prob_age_keras + " " + lines_age[1]
+			if(cls_age_keras>=5 and cls_age_keras<12):
+				label="%.2f" % prob_age_keras + " " + lines_age[2]
+			if(cls_age_keras>=12 and cls_age_keras<20):
+				label="%.2f" % prob_age_keras + " " + lines_age[3]
+			if(cls_age_keras>=20 and cls_age_keras<30):
+				label="%.2f" % prob_age_keras + " " + lines_age[4]
+			if(cls_age_keras>=30 and cls_age_keras<40):
+				label="%.2f" % prob_age_keras + " " + lines_age[5]
+			if(cls_age_keras>=40 and cls_age_keras<60):
+				label="%.2f" % prob_age_keras + " " + lines_age[6]
+			if(cls_age_keras>=60):
+				label="%.2f" % prob_age_keras + " " + lines_age[7]
 
 			#label="%.2f" % prob_age_keras + " " + lines_age[cls_age_keras]
 
-			cv2.putText(target_image, "Age : "+label, (xmin2,ymax2+offset), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0,0,250));
-			offset=offset+16
+			#cv2.putText(target_image, "Age : "+label, (xmin2,ymax2+offset), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0,0,250));
+			#offset=offset+16
 
 		if(model_gender!=None):
 			shape = model_gender.layers[0].get_output_at(0).get_shape().as_list()
@@ -312,8 +329,8 @@ def show_results(img,results, img_width, img_height, model_age, model_gender, mo
 			pred_gender_keras = model_gender.predict(img_gender)[0]
 			prob_gender_keras = np.max(pred_gender_keras)
 			cls_gender_keras = pred_gender_keras.argmax()
-			cv2.putText(target_image, "Gender : %.2f" % prob_gender_keras + " " + lines_gender[cls_gender_keras], (xmin2,ymax2+offset), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0,0,250));
-			offset=offset+16
+			#cv2.putText(target_image, "Gender : %.2f" % prob_gender_keras + " " + lines_gender[cls_gender_keras], (xmin2,ymax2+offset), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0,0,250));
+			#offset=offset+16
 
 		if(model_emotion!=None):
 			shape = model_emotion.layers[0].get_output_at(0).get_shape().as_list()
@@ -327,10 +344,10 @@ def show_results(img,results, img_width, img_height, model_age, model_gender, mo
 			pred_emotion_keras = model_emotion.predict(img_fer2013)[0]
 			prob_emotion_keras = np.max(pred_emotion_keras)
 			cls_emotion_keras = pred_emotion_keras.argmax()
-			cv2.putText(target_image, "Emotion : %.2f" % prob_emotion_keras + " " + lines_fer2013[cls_emotion_keras], (xmin2,ymax2+offset), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0,0,250));
-			offset=offset+16
-	print("Gender : %.2f" % prob_gender_keras + " " + lines_gender[cls_gender_keras])
-	cv2.imwrite('images/output.jpg',img_cp)
+			#cv2.putText(target_image, "Emotion : %.2f" % prob_emotion_keras + " " + lines_fer2013[cls_emotion_keras], (xmin2,ymax2+offset), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0,0,250));
+			#offset=offset+16
+	#print("Gender : %.2f" % prob_gender_keras + " " + lines_gender[cls_gender_keras])
+	#cv2.imwrite('images/output.jpg',img_cp)
 	return prob_gender_keras, label
 	
 def stringToRGB(base64_string):
