@@ -8,7 +8,7 @@ else:
 	import urllib2
 
 def main(argv):
-	OUTPUT_PATH="./pretrain/"
+	OUTPUT_PATH="/app/pretrain/"
 	if not os.path.isdir(OUTPUT_PATH):
 		os.mkdir(OUTPUT_PATH)
 	print("1/3");
