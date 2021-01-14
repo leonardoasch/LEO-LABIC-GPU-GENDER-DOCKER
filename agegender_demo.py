@@ -284,9 +284,9 @@ def show_results(img,results, img_width, img_height, model_age, model_gender, mo
 
 		offset=16
 
-		lines_age=open('words/agegender_age_words.txt').readlines()
-		lines_gender=open('words/agegender_gender_words.txt').readlines()
-		lines_fer2013=open('words/emotion_words.txt').readlines()
+		lines_age=open('/app/words/agegender_age_words.txt').readlines()
+		lines_gender=open('/app/words/agegender_gender_words.txt').readlines()
+		lines_fer2013=open('/app/words/emotion_words.txt').readlines()
 
 		if(model_age!=None):		
 			shape = model_age.layers[0].get_output_at(0).get_shape().as_list()
