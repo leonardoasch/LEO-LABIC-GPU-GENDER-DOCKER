@@ -287,6 +287,8 @@ def show_results(img,results, img_width, img_height, model_age, model_gender, mo
 		lines_age=open('/app/words/agegender_age_words.txt').readlines()
 		lines_gender=open('/app/words/agegender_gender_words.txt').readlines()
 		lines_fer2013=open('/app/words/emotion_words.txt').readlines()
+		
+		print(model_age)
 
 		if(model_age!=None):		
 			shape = model_age.layers[0].get_output_at(0).get_shape().as_list()
@@ -325,7 +327,7 @@ def show_results(img,results, img_width, img_height, model_age, model_gender, mo
 
 			#cv2.putText(target_image, "Age : "+label, (xmin2,ymax2+offset), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0,0,250));
 			#offset=offset+16
-
+		print(model_gender)
 		if(model_gender!=None):
 			shape = model_gender.layers[0].get_output_at(0).get_shape().as_list()
 
@@ -430,6 +432,8 @@ def main(argv):
 		
 		
 		bboxes = data['bbox']
+		
+		print (bboxes)
 		
 		
 		image = stringToRGB(data['data'])
