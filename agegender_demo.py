@@ -354,8 +354,14 @@ def show_results(img,results, img_width, img_height, model_age, model_gender, mo
 			cls_emotion_keras = pred_emotion_keras.argmax()
 			#cv2.putText(target_image, "Emotion : %.2f" % prob_emotion_keras + " " + lines_fer2013[cls_emotion_keras], (xmin2,ymax2+offset), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0,0,250));
 			#offset=offset+16
-	#print("Gender : %.2f" % prob_gender_keras + " " + lines_gender[cls_gender_keras])
+	print("Gender : %.2f" % prob_gender_keras + " " + lines_gender[cls_gender_keras])
 	#cv2.imwrite('images/output.jpg',img_cp)
+	print (prob_gender_keras)
+	print (label)
+		
+	input()
+	
+	
 	return prob_gender_keras, label
 	
 def stringToRGB(base64_string):
@@ -450,7 +456,6 @@ def main(argv):
 		print (pred_age)
 		print (pred_gender)
 		
-		input()
 
 		
 		mycol.update_one({"_id": ObjectId(message["mongoid"])}, newvalues)
