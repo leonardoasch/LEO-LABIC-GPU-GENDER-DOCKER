@@ -250,6 +250,7 @@ def crop(x,y,w,h,margin,img_width,img_height):
 #display result
 def show_results(img,results, img_width, img_height, model_age, model_gender, model_emotion):
 	prob_gender_keras = None
+	cls_gender_keras = None
 	label = None
 	img_cp = img.copy()
 	for i in range(len(results)):
@@ -288,7 +289,7 @@ def show_results(img,results, img_width, img_height, model_age, model_gender, mo
 		lines_gender=open('/app/words/agegender_gender_words.txt').readlines()
 		lines_fer2013=open('/app/words/emotion_words.txt').readlines()
 		
-		print(model_age)
+		#print(model_age)
 
 		if(model_age!=None):		
 			shape = model_age.layers[0].get_output_at(0).get_shape().as_list()
@@ -327,7 +328,7 @@ def show_results(img,results, img_width, img_height, model_age, model_gender, mo
 
 			#cv2.putText(target_image, "Age : "+label, (xmin2,ymax2+offset), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0,0,250));
 			#offset=offset+16
-		print(model_gender)
+		#print(model_gender)
 		if(model_gender!=None):
 			shape = model_gender.layers[0].get_output_at(0).get_shape().as_list()
 
@@ -360,7 +361,7 @@ def show_results(img,results, img_width, img_height, model_age, model_gender, mo
 	#cv2.imwrite('images/output.jpg',img_cp)
 	
 	
-	return prob_gender_keras, label
+	return lines_gender[cls_gender_keras], label
 	
 def stringToRGB(base64_string):
     imgdata = base64.b64decode(str(base64_string))
@@ -429,7 +430,7 @@ def main(argv):
 		
 		bboxes = data['bbox']
 		
-		print (bboxes)
+		#print (bboxes)
 		
 		
 		image = stringToRGB(data['data'])
@@ -450,12 +451,14 @@ def main(argv):
 
 		#Age and Gender Detection
 		pred_gender,pred_age = show_results(img_cv,results, img.shape[1], img.shape[0], model_age, model_gender, model_emotion)
-		print (pred_age)
+		print (pred_age[2])
 		print (pred_gender)
 		
 		if(pred_gender or pred_age != None):
+			
+			if(pred_gender
 
-			newvalues = { "$set": { "age": pred_age, "gender": pred_gender}}
+			newvalues = { "$set": { "age": pred_age[2], "gender": pred_gender}}
 			mycol.update_one({"_id": ObjectId(message["mongoid"])}, newvalues)
 
 if __name__=='__main__':
