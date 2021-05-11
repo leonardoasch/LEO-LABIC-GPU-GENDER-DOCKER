@@ -356,12 +356,8 @@ def show_results(img,results, img_width, img_height, model_age, model_gender, mo
 			cls_emotion_keras = pred_emotion_keras.argmax()
 			#cv2.putText(target_image, "Emotion : %.2f" % prob_emotion_keras + " " + lines_fer2013[cls_emotion_keras], (xmin2,ymax2+offset), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0,0,250));
 			#offset=offset+16
-	print("Gender : %.2f" % prob_gender_keras + " " + lines_gender[cls_gender_keras])
+	#print("Gender : %.2f" % prob_gender_keras + " " + lines_gender[cls_gender_keras])
 	#cv2.imwrite('images/output.jpg',img_cp)
-	print (prob_gender_keras)
-	print (label)
-		
-	input()
 	
 	
 	return prob_gender_keras, label
@@ -454,15 +450,13 @@ def main(argv):
 
 		#Age and Gender Detection
 		pred_gender,pred_age = show_results(img_cv,results, img.shape[1], img.shape[0], model_age, model_gender, model_emotion)
-		
-		newvalues = { "$set": { "age": pred_age, "gender": pred_gender} }
-		
 		print (pred_age)
 		print (pred_gender)
 		
+		if(pred_gender or pred_age != None):
 
-		
-		mycol.update_one({"_id": ObjectId(message["mongoid"])}, newvalues)
+			newvalues = { "$set": { "age": pred_age, "gender": pred_gender}
+			mycol.update_one({"_id": ObjectId(message["mongoid"])}, newvalues)
 
 if __name__=='__main__':
 	main(sys.argv[1:])
