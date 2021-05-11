@@ -420,9 +420,15 @@ def main(argv):
 		
 		data = mycol.find({"_id": ObjectId(message["mongoid"])})
 
-		tempo = datetime.strptime(message["timestamp"], '%Y-%m-%d %H:%M:%S.%f')    
+		tempo = datetime.strptime(message["timestamp"], '%Y-%m-%d %H:%M:%S.%f')  
+		
+		
 		bboxes = data['bbox']
+		
+		
 		image = stringToRGB(data['data'])
+		
+		
 		frame = image[bboxes["StartY"]:bboxes["EndY"],bboxes["StartX"]:bboxes["EndX"]]
 
 
