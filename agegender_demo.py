@@ -251,6 +251,7 @@ def crop(x,y,w,h,margin,img_width,img_height):
 def show_results(img,results, img_width, img_height, model_age, model_gender, model_emotion):
 	prob_gender_keras = None
 	cls_gender_keras = None
+	lines_gender = None
 	label = None
 	img_cp = img.copy()
 	for i in range(len(results)):
