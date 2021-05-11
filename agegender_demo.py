@@ -455,8 +455,6 @@ def main(argv):
 		print (pred_gender)
 		
 		if(pred_gender or pred_age != None):
-			
-			if(pred_gender
 
 			newvalues = { "$set": { "age": pred_age[2], "gender": pred_gender}}
 			mycol.update_one({"_id": ObjectId(message["mongoid"])}, newvalues)
