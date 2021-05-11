@@ -418,7 +418,7 @@ def main(argv):
 		
 		#print(message["mongoid"])
 		
-		data = mycol.find({"_id": ObjectId(message["mongoid"])})
+		data = mycol.find_one({"_id": ObjectId(message["mongoid"])})
 
 		tempo = datetime.strptime(message["timestamp"], '%Y-%m-%d %H:%M:%S.%f')  
 		
