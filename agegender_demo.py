@@ -446,6 +446,11 @@ def main(argv):
 		pred_gender,pred_age = show_results(img_cv,results, img.shape[1], img.shape[0], model_age, model_gender, model_emotion)
 		
 		newvalues = { "$set": { "age": pred_age, "gender": pred_gender} }
+		
+		print (pred_age)
+		print (pred_gender)
+		
+		input()
 
 		
 		mycol.update_one({"_id": ObjectId(message["mongoid"])}, newvalues)
