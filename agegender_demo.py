@@ -252,6 +252,7 @@ def show_results(img,results, img_width, img_height, model_age, model_gender, mo
 	prob_gender_keras = None
 	cls_gender_keras = None
 	lines_gender = None
+	gender_result = None
 	label = None
 	img_cp = img.copy()
 	for i in range(len(results)):
@@ -341,6 +342,7 @@ def show_results(img,results, img_width, img_height, model_age, model_gender, mo
 			pred_gender_keras = model_gender.predict(img_gender)[0]
 			prob_gender_keras = np.max(pred_gender_keras)
 			cls_gender_keras = pred_gender_keras.argmax()
+			gender_result = lines_gender[cls_gender_keras]
 			#cv2.putText(target_image, "Gender : %.2f" % prob_gender_keras + " " + lines_gender[cls_gender_keras], (xmin2,ymax2+offset), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0,0,250));
 			#offset=offset+16
 
@@ -362,7 +364,7 @@ def show_results(img,results, img_width, img_height, model_age, model_gender, mo
 	#cv2.imwrite('images/output.jpg',img_cp)
 	
 	
-	return lines_gender[cls_gender_keras], label
+	return gender_result, label
 	
 def stringToRGB(base64_string):
     imgdata = base64.b64decode(str(base64_string))
