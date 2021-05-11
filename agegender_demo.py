@@ -418,7 +418,7 @@ def main(argv):
 		
 		#print(message["mongoid"])
 		
-		data = mycol.find({"_id": message["mongoid"]})
+		data = mycol.find({"_id": ObjectId(message["mongoid"])})
 
 		tempo = datetime.strptime(message["timestamp"], '%Y-%m-%d %H:%M:%S.%f')    
 		bboxes = data['bbox']
@@ -442,7 +442,7 @@ def main(argv):
 		newvalues = { "$set": { "age": pred_age, "gender": pred_gender} }
 
 		
-		mycol.update_one({"_id": message["mongoid"]}, newvalues)
+		mycol.update_one({"_id": ObjectId(message["mongoid"])}, newvalues)
 
 if __name__=='__main__':
 	main(sys.argv[1:])
